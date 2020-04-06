@@ -9,7 +9,9 @@ class App extends Component {
   state = {
     sushi: [],
     startIndex: 0,
-    eatenSushi: []
+    eatenSushi: [],
+    money: 100,
+    eatenCost: 0
   }
 
   addEaten = (data) => {
@@ -25,18 +27,24 @@ class App extends Component {
 
   eaten = (sushiToUpdate) => {
 
-    this.setState( prevState =>({
-      ...prevState,
-        sushi: prevState.sushi.map(piece =>{
-          if (piece === sushiToUpdate) {
-            return {...piece, eaten:true}
-          } else {
-            return piece
-          }
-          }),
-          eatenSushi: [...prevState.eatenSushi, sushiToUpdate]
-      })
-    )
+    if ((this.state.money - this.state.eatenCost)>sushiToUpdate.price) {
+      this.setState( prevState =>({
+        ...prevState,
+          sushi: prevState.sushi.map(piece =>{
+            if (piece === sushiToUpdate) {
+              return {...piece, eaten:true}
+            } else {
+              return piece
+            }
+            }),
+            eatenSushi: [...prevState.eatenSushi, sushiToUpdate],
+            eatenCost: prevState.eatenCost + sushiToUpdate.price
+        })
+      )
+    } else {
+      
+    }
+
   }
 
   componentDidMount() {
@@ -55,7 +63,7 @@ class App extends Component {
           nextPage = {this.nextPage}
           eaten={this.eaten}
           />
-        <Table />
+        <Table eatenCost = {this.state.eatenCost} money = {this.state.money} eatenSushi = {this.state.eatenSushi}/>
       </div>
     );
   }
