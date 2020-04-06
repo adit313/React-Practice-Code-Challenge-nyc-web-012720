@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SushiContainer from './containers/SushiContainer';
 import Table from './containers/Table';
+import AddMoney from './components/AddMoney';
 
 // Endpoint!
 const API = "http://localhost:3000/sushis"
@@ -22,7 +23,11 @@ class App extends Component {
   }
 
   nextPage = () => {
-    this.setState({startIndex: this.state.startIndex + 4})
+    if (this.state.startIndex + 4 < this.state.sushi.length) {
+      this.setState({startIndex: this.state.startIndex + 4})
+    } else {
+      this.setState({startIndex: (this.state.startIndex + 4 -this.state.sushi.length)})
+    }
   }
 
   eaten = (sushiToUpdate) => {
@@ -42,7 +47,7 @@ class App extends Component {
         })
       )
     } else {
-      
+
     }
 
   }
@@ -51,6 +56,10 @@ class App extends Component {
     fetch(API)
     .then(resp => resp.json())
     .then(data => this.setState({sushi: this.addEaten(data)}))
+  }
+
+  addMoney = (amount) => {
+    this.setState({money: (parseInt(this.state.money)+parseInt(amount))})
   }
 
   render() {
@@ -64,6 +73,7 @@ class App extends Component {
           eaten={this.eaten}
           />
         <Table eatenCost = {this.state.eatenCost} money = {this.state.money} eatenSushi = {this.state.eatenSushi}/>
+        <AddMoney addMoney={this.addMoney}/>
       </div>
     );
   }
